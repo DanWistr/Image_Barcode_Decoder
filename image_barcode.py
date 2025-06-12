@@ -23,7 +23,7 @@ SELECTED_FORMATS = (
 )
 
 # Hard-coded input image path
-IMAGE_PATH = 'C:/Users/Admin/Desktop/Neww/venv/high_res_image.JPG'
+IMAGE_PATH = 'C:/Users/Admin/Desktop/Neww/venv/pcb_barcode_try.jpg'
 
 def init_router():
     # Initialize license (unified API)
@@ -62,48 +62,50 @@ def init_router():
     return router
 
 def decode_barcodes():
-    router = init_router()
-    # CaptureVisionRouter.capture returns a list of BarcodeResultItem
-    results = router.capture(IMAGE_PATH)
-    decoded = []
-    for res in results:
-        try:
-            text = res.get_text()
-            fmt = res.get_format_string()
-            confidence = res.get_confidence()
-            location = res.get_location()  # Returns a quadrilateral object
-
-            # Extract points from the quadrilateral (assuming they are in order)
-            points = [(point.x, point.y) for point in location.points]
-
-            decoded.append({
-                'text': text,
-                'format': fmt,
-                'confidence': confidence,
-                'localization': points
-            })
-            return decoded
-        except Exception as e:
-            print(f"Failed to parse result: {e}")
-    
-    
-    
-
-if __name__ == '__main__':
     try:
-        barcodes = decode_barcodes()
-        print(barcodes)
+        # Initialize the router
+        router = init_router()
+
+        # CaptureVisionRouter.capture() returns a list of BarcodeResultItem
+        results = router.capture(IMAGE_PATH)
+
+        decoded = []
+        for res in results:
+            try:
+                text = res.get_text()
+                fmt = res.get_format_string()
+                confidence = res.get_confidence()
+                location = res.get_location()  # Returns a quadrilateral object
+
+                points = [(point.x, point.y) for point in location.points]
+
+                decoded.append({
+                    'text': text,
+                    'format': fmt,
+                    'confidence': confidence,
+                    'localization': points
+                })
+
+            except Exception as e:
+                print(f"Failed to parse result: {e}")
+
+            # Print only the final (last) decoded result
+            if decoded:
+                last = decoded[-1]
+                print(f"Detected {len(decoded)}th barcode:")
+                print(f"[{len(decoded)}]") 
+                print(f"  Text        : {last['text']}")
+                print(f"  Format      : {last['format']}")
+                print(f"  Confidence  : {last['confidence']}")
+                print(f"  Localization: {last['localization']}")
+            else:
+                print("No barcodes detected.")
+
     except Exception as e:
         print(f"Error: {e}")
-        barcodes = []
 
-    if not barcodes:
-        print("No barcodes detected.")
-    else:
-        print(f"Detected {len(barcodes)} barcode(s):")
-        for i, b in enumerate(barcodes, 1):
-            print(f"[{i}]")
-            print(f"  Text      : {b['text']}")
-            print(f"  Format    : {b['format']}")
-            print(f"  Confidence: {b['confidence']}")
-            print(f"  Localization: {b['localization']}")
+
+# Call decode_barcodes() when the script is executed
+if __name__ == '__main__':
+    barcodes = decode_barcodes()
+    print(barcodes)

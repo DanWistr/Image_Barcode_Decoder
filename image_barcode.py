@@ -23,7 +23,7 @@ SELECTED_FORMATS = (
 )
 
 # Hard-coded input image path
-IMAGE_PATH = 'high_res_image.jpg'
+IMAGE_PATH = 'C:/Users/Admin/Desktop/Neww/venv/high_res_image.JPG'
 
 def init_router():
     # Initialize license (unified API)
@@ -82,11 +82,11 @@ def decode_barcodes():
                 'confidence': confidence,
                 'localization': points
             })
-            
+            return decoded
         except Exception as e:
             print(f"Failed to parse result: {e}")
     
-    return decoded
+    
     
 
 if __name__ == '__main__':

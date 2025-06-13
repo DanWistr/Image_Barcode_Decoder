@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Barcodes image="image_5.jpg" timestamp="2025-06-13T11:35:00.301368"><Barcode id="1"><Text>15502501000372800630KS1E</Text><Format>DATAMATRIX</Format><Confidence>92</Confidence><Localization><Point index="0"><X>4246</X><Y>2061</Y></Point><Point index="1"><X>4240</X><Y>2229</Y></Point><Point index="2"><X>4077</X><Y>2224</Y></Point><Point index="3"><X>4082</X><Y>2056</Y></Point></Localization></Barcode></Barcodes>

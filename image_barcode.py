@@ -21,6 +21,8 @@ SELECTED_FORMATS = (
     | EnumBarcodeFormat.BF_CODE_128
 )
 
+
+
 #---------------------------------------API CONNECTION-------------------------------------------------------#
 def init_router():
     # Initialize license (unified API)
@@ -48,7 +50,14 @@ def init_router():
     image_param['MaxWidth'] = 6000
     image_param['MaxHeight'] = 4000
 
-    task_cfg['DeblurModes'] = [9]
+    task_cfg['DeblurModes'] = [
+    { "Mode": "DM_GRAY_EQUALIZATION"    },  # boost mid‑tone contrast
+    { "Mode": "DM_BASED_ON_LOC_BIN"     },  # seed with your localized binarization
+    { "Mode": "DM_SMOOTHING"            },  # remove PCB grain & noise
+    { "Mode": "DM_SHARPENING_SMOOTHING" },  # sharpen edges + artifact cleanup
+    { "Mode": "DM_MORPHING"             },  # tidy up any remaining speckles
+    { "Mode": "DM_DEEP_ANALYSIS"        },  # last‑resort “deep” method
+    ]
     task_cfg['BarcodeFormatIds'] = int(SELECTED_FORMATS)
 
     router.init_settings(json.dumps(cfg))

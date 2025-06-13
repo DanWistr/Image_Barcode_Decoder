@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Barcodes image="backside_clear_inverted.jpg" timestamp="2025-06-13T14:28:51.918674"><Barcode id="1"><Text>CN0G60M3WSC0026K1XLQA00</Text><Format>DATAMATRIX</Format><Confidence>97</Confidence><Localization><Point index="0"><X>1524</X><Y>1783</Y></Point><Point index="1"><X>1615</X><Y>1783</Y></Point><Point index="2"><X>1615</X><Y>1879</Y></Point><Point index="3"><X>1524</X><Y>1879</Y></Point></Localization></Barcode></Barcodes>

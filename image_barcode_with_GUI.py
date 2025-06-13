@@ -18,7 +18,7 @@ class App(customtkinter.CTk):
         self.geometry("600x500")
         self.title("CTK APP")
 
-        # DETECT button fires off a child process instead of threading.Thread
+        # DETECT button fires off a child process
         self.decode_button = customtkinter.CTkButton(
             self,
             text="DETECT",
@@ -37,7 +37,6 @@ class App(customtkinter.CTk):
         # Spawn a new process that runs decode_worker()
         p = Process(target=decode_worker, args=(IMAGE_PATH,), daemon=True)
         p.start()
-        print(f"Spawned child PID={p.pid} to do barcode decode")
 
 if __name__ == "__main__":
     try:

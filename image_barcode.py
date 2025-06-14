@@ -11,6 +11,7 @@ from dynamsoft_barcode_reader_bundle import (
 )
 
 LICENSE_KEY = 't0083YQEAAKqisPaOrLvM0tGYIFZd04VlwkQPvSCAZ4R2+kDWpFzDsEKVbxLkbhN4noJKQL+E0fMaU/Pmjx9bxkBIbeFwualmfM803jOjFTODC/izSGg=;t0082YQEAAEOa7iWLgmj5HwcSP7J0uNaMQ/kZ/x8HgwPBUpUE8rgwZj8s7nrHomUArjOIL611KRz1gqlYYYTZ98clI+D2lvWM75vifTOySIIddlJJAg==;t0082YQEAAA/YSn4DjmzJcu2C2qrVkNFVQ3pbrfwAi+IqrxbxV31mVURD6/IhsMOj+eYszSaE4PXkcuJ0GyOjRmygD4xAkHAZ3zfF+2bULAkOfcdJCQ=='
+TEMPLATE_PATH  = os.path.join(os.path.dirname(__file__), 'template.json')
 
 SELECTED_FORMATS = (
     EnumBarcodeFormat.BF_ONED
@@ -21,47 +22,24 @@ SELECTED_FORMATS = (
     | EnumBarcodeFormat.BF_CODE_128
 )
 
-
-
 #---------------------------------------API CONNECTION-------------------------------------------------------#
 def init_router():
-    # Initialize license (unified API)
+    # 1) Init license
     err, msg = LicenseManager.init_license(LICENSE_KEY)
-    print("Errors:",err, ", Message:",msg)
+    print("License init:", msg)
     if err not in (EnumErrorCode.EC_OK, EnumErrorCode.EC_LICENSE_CACHE_USED):
         raise RuntimeError(f"License init failed ({err}): {msg}")
 
-    # Configure router (unified API)
+    # 2) Create router
     router = CaptureVisionRouter()
-    raw_settings = router.output_settings('default')
 
-    if isinstance(raw_settings, tuple):
-        settings_json = next((item for item in raw_settings if isinstance(item, str)), None)
-        if not settings_json:
-            raise RuntimeError("Unable to retrieve settings JSON from output_settings()")
-    else:
-        settings_json = raw_settings
+    # 3) Load your full JSON config
+    with open(TEMPLATE_PATH, 'r', encoding='utf-8') as f:
+        cfg = json.load(f)
 
-    cfg = json.loads(settings_json)
-    task_cfg = cfg.setdefault('BarcodeReaderTaskSetting', {})
-    image_param = task_cfg.setdefault('ImageParameter', {})
-
-    #Maximum DSLR resolution
-    image_param['MaxWidth'] = 6000
-    image_param['MaxHeight'] = 4000
-
-    task_cfg['DeblurModes'] = [
-    { "Mode": "DM_GRAY_EQUALIZATION"    },  # boost mid‑tone contrast
-    { "Mode": "DM_BASED_ON_LOC_BIN"     },  # seed with your localized binarization
-    { "Mode": "DM_SMOOTHING"            },  # remove PCB grain & noise
-    { "Mode": "DM_SHARPENING_SMOOTHING" },  # sharpen edges + artifact cleanup
-    { "Mode": "DM_MORPHING"             },  # tidy up any remaining speckles
-    { "Mode": "DM_DEEP_ANALYSIS"        },  # last‑resort “deep” method
-    ]
-    task_cfg['BarcodeFormatIds'] = int(SELECTED_FORMATS)
-
+    # 4) Apply it
     router.init_settings(json.dumps(cfg))
-    
+
     return router
 
 #--------------------------------------DECODER FUNCTION-------------------------------------------------------#
